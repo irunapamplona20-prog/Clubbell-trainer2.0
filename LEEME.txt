@@ -1,0 +1,21 @@
+# Clubbell Trainer
+
+## Archivos
+- `index.html`: aplicación.
+- `manifest.webmanifest`: configuración instalable.
+- `sw.js`: caché para uso sin conexión.
+- `icon-192.png` y `icon-512.png`: iconos.
+
+## Publicarla gratis con GitHub Pages
+1. Entra en https://github.com y crea una cuenta si no tienes.
+2. Crea un repositorio nuevo, por ejemplo `clubbell-trainer`.
+3. Sube TODOS los archivos de esta carpeta a la raíz del repositorio.
+4. Ve a **Settings → Pages**.
+5. En **Build and deployment**, selecciona **Deploy from a branch**, rama `main`, carpeta `/ (root)`, y guarda.
+6. Espera a que GitHub Pages muestre la dirección publicada.
+7. Abre esa dirección con Safari en el iPhone → botón Compartir → **Añadir a pantalla de inicio**.
+
+La instalación PWA y el modo sin conexión requieren HTTPS (GitHub Pages lo proporciona).
+
+## Nota sobre iPhone
+El bloqueo de pantalla y la ejecución en segundo plano tienen limitaciones de iOS. El temporizador intenta mantener la pantalla activa mientras está abierto, pero Safari puede suspender una web al bloquear el teléfono. Para máxima fiabilidad, deja la app visible durante la sesión.

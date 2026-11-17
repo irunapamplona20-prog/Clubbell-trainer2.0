@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#121212">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Clubbell">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Clubbell Trainer</title>
+<style>
+:root{color-scheme:dark;--bg:#101010;--card:#1d1d1f;--line:#333;--orange:#ff6b35;--green:#31b56a;--blue:#3989ed;--muted:#aaa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:calc(16px + env(safe-area-inset-top)) 15px calc(25px + env(safe-area-inset-bottom));}
+.app{max-width:520px;margin:auto}h1{text-align:center;color:var(--orange);font-size:1.55rem;margin:4px 0 5px}.sub{text-align:center;color:var(--muted);font-size:.82rem;margin-bottom:17px}
+.card{background:var(--card);border:1px solid #292929;border-radius:17px;padding:16px;margin:12px 0;box-shadow:0 5px 18px #0005}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}label{display:block;color:var(--muted);font-size:.78rem;font-weight:650;margin:0 0 6px}
+select,input{width:100%;padding:12px;border-radius:10px;border:1px solid #444;background:#292929;color:white;font-size: .95rem}
+.timer{text-align:center;padding:15px 0 8px}.phase{text-transform:uppercase;letter-spacing:2px;font-weight:800;color:var(--muted);font-size:.9rem}.clock{font-size:clamp(3.8rem,17vw,5.2rem);font-weight:850;letter-spacing:-2px;font-variant-numeric:tabular-nums;line-height:1.15;margin:7px 0}
+.exercise{font-size:1.25rem;font-weight:800;color:var(--orange);min-height:1.6em}.desc{color:#bbb;line-height:1.45;font-size:.9rem;min-height:42px;margin:5px 0}
+.progress{height:7px;background:#333;border-radius:9px;overflow:hidden;margin:12px 0 5px}.bar{height:100%;width:0;background:var(--orange);transition:width .2s}
+.controls{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-top:12px}button{border:0;border-radius:11px;padding:14px 9px;font-weight:800;font-size:.95rem;color:white;background:#3a3a3a}button:active{transform:scale(.98)}.start{background:var(--green)}.pause{background:#d88719}.next{background:#365f9a}
+.smallgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#292929;border-radius:10px;padding:10px;text-align:center}.stat b{display:block;font-size:1.05rem}.stat span{font-size:.7rem;color:var(--muted)}
+.list{list-style:none;padding:0;margin:8px 0 0}.list li{display:flex;gap:9px;align-items:center;padding:11px 7px;border-bottom:1px solid #303030;font-size:.88rem}.list li:last-child{border:0}.list li.active{background:#ff6b3520;border-left:3px solid var(--orange);border-radius:7px}.num{color:var(--muted);min-width:22px}.tag{margin-left:auto;color:#bbb;background:#303030;border-radius:6px;padding:4px 7px;font-size:.72rem;white-space:nowrap}
+.section-title{font-weight:800;margin-bottom:8px}.hint{color:var(--muted);font-size:.78rem;line-height:1.45}.row{display:flex;gap:9px;align-items:center}.row>*{flex:1}.toggle{display:flex;align-items:center;gap:8px;color:#ccc;font-size:.82rem;margin-top:12px}.toggle input{width:auto;accent-color:var(--orange)}
+details summary{font-weight:750;cursor:pointer;padding:3px 0}details p{color:#bbb;font-size:.86rem;line-height:1.5}.foot{text-align:center;color:#777;font-size:.7rem;margin:17px 0}
+@media(max-width:360px){.controls{grid-template-columns:1fr 1fr}.controls .start{grid-column:span 2}.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body><main class="app">
+<h1>🔨 Clubbell Trainer</h1><div class="sub">Entrena fuerza, control y movilidad</div>
+<section class="card">
+ <div class="grid">
+  <div><label for="routine">RUTINA</label><select id="routine"></select></div>
+  <div><label for="interval">INTERVALOS</label><select id="interval"><option value="30-15">30 / 15 s</option><option value="40-20" selected>40 / 20 s</option><option value="45-15">45 / 15 s</option><option value="50-10">50 / 10 s</option></select></div>
+ </div>
+ <div class="grid" style="margin-top:10px">
+  <div><label for="rounds">VUELTAS</label><select id="rounds"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+  <div><label for="level">NIVEL</label><select id="level"><option value="easy">Suave</option><option value="normal" selected>Normal</option><option value="hard">Intenso</option></select></div>
+ </div>
+ <div class="timer">
+  <div id="phase" class="phase">LISTO PARA EMPEZAR</div><div id="clock" class="clock">00:40</div>
+  <div id="exercise" class="exercise">Elige una rutina</div><div id="description" class="desc">Deja espacio libre alrededor y empieza con un peso que controles perfectamente.</div>
+  <div class="progress"><div id="bar" class="bar"></div></div>
+ </div>
+ <div class="smallgrid">
+  <div class="stat"><b id="step">0 / 0</b><span>EJERCICIO</span></div>
+  <div class="stat"><b id="round">1 / 2</b><span>VUELTA</span></div>
+  <div class="stat"><b id="total">00:00</b><span>TRANSCURRIDO</span></div>
+ </div>
+ <div class="controls"><button id="start" class="start">▶ Iniciar</button><button id="skip" class="next">Saltar</button><button id="reset">Reiniciar</button></div>
+ <label class="toggle"><input type="checkbox" id="sound" checked> Avisos sonoros</label>
+</section>
+<section class="card"><div class="section-title">Ejercicios de la sesión</div><ul id="list" class="list"></ul></section>
+<section class="card">
+ <details><summary>Consejos y seguridad</summary>
+ <p>Empieza con un clubbell ligero. Calienta 5–8 minutos, domina primero el movimiento lento y mantén muñeca neutra, abdomen activo y hombros controlados. No entrenes con dolor ni hagas movimientos balísticos por encima de tu nivel. En los ejercicios a una mano, cambia de lado según indique la rutina. Descansa más si pierdes técnica.</p>
+ <p>El temporizador es una guía: en iPhone, iOS puede suspender una página web al bloquear la pantalla. Mantén la app abierta para la máxima fiabilidad; los avisos y el bloqueo de pantalla dependen de la versión de iOS y Safari.</p></details>
+</section>
+<div class="foot">Clubbell Trainer · Guarda esta app en tu pantalla de inicio</div>
+</main>
+<script>
+const routines={
+ basics:{title:"Fundamentos · 2 manos",items:[
+ ["Bisagra + swing suave","Cadera atrás y adelante; brazos relajados, espalda neutra.","Técnica"],
+ ["Inside circle · derecha","Círculo controlado hacia dentro; acompaña con el tronco sin forzar el hombro.","Control"],
+ ["Inside circle · izquierda","Repite hacia el lado izquierdo, manteniendo el recorrido cómodo.","Control"],
+ ["Shield cast · 2 manos","Lleva el peso detrás de la cabeza solo si controlas el recorrido; codos cómodos.","Movilidad"],
+ ["Order squat","Sentadilla sosteniendo el clubbell vertical delante del pecho; rodillas siguen los pies.","Piernas"],
+ ["Good morning · 2 manos","Bisagra de cadera sin redondear la espalda; movimiento lento.","Posterior"]
+ ]},
+ flow:{title:"Flujo y hombros · 1 mano",items:[
+ ["Single-arm swing · derecha","Balanceo corto y controlado. Evita girar el tronco; cambia de mano solo al terminar.","Derecha"],
+ ["Single-arm swing · izquierda","Mismo movimiento con la izquierda; prioriza el control sobre la altura.","Izquierda"],
+ ["Arm cast · derecha","Desde posición de orden, rodea la cabeza con recorrido pequeño y fluido.","Derecha"],
+ ["Arm cast · izquierda","Repite al otro lado, sin arquear la zona lumbar.","Izquierda"],
+ ["Mill técnico · derecha","Une el círculo y el cast lentamente, sin acelerar la inercia.","Derecha"],
+ ["Mill técnico · izquierda","Repite con la izquierda; detente si el hombro pierde estabilidad.","Izquierda"]
+ ]},
+ conditioning:{title:"Acondicionamiento · HIIT",items:[
+ ["Front hold march","Sujeta el clubbell delante del pecho y marcha elevando poco las rodillas.","Core"],
+ ["Goblet / order squat","Sentadilla con el peso cerca del pecho; baja hasta donde mantengas postura.","Piernas"],
+ ["Two-hand swing","Balanceo desde la cadera, no desde los hombros; potencia moderada.","Potencia"],
+ ["Side-to-side step","Da pasos laterales manteniendo el clubbell cerca del cuerpo.","Cardio"],
+ ["Reverse lunge · alterno","Zancada atrás alternando piernas; mantén equilibrio y torso estable.","Piernas"]
+ ]},
+ mobility:{title:"Movilidad y técnica · suave",items:[
+ ["Halo · derecha","Rodea la cabeza con recorrido corto y sin dolor; mantén costillas controladas.","Hombros"],
+ ["Halo · izquierda","Repite en sentido contrario y sin forzar el rango.","Hombros"],
+ ["Order hold","Sostén el clubbell vertical cerca del pecho y respira con normalidad.","Postura"],
+ ["Hip hinge drill","Practica la bisagra de cadera con movimiento lento y espalda neutra.","Cadera"],
+ ["Squat to stand","Sentadilla cómoda sujetando el clubbell cerca del pecho.","Movilidad"]
+ ]}
+};
+const $=id=>document.getElementById(id);
+let routineKey="basics",items=[],idx=0,roundNo=1,work=40,rest=20,left=40,working=true,running=false,handle=null,startedAt=0,elapsedBefore=0,phaseStarted=0,phaseDuration=40,wake=null,audio=null;
+Object.entries(routines).forEach(([k,v])=>{let o=document.createElement("option");o.value=k;o.textContent=v.title;$("routine").append(o)});
+function secs(v){return String(Math.floor(v/60)).padStart(2,"0")+":"+String(v%60).padStart(2,"0")}
+function totalItems(){return items.length*Number($("rounds").value)}
+function current(){return items[idx]||["Sesión completada","Buen trabajo. Termina con unos minutos de movilidad suave.","Fin"]}
+function renderList(){let ul=$("list");ul.innerHTML="";items.forEach((it,i)=>{let li=document.createElement("li");li.id="item"+i;li.innerHTML=`<span class="num">${i+1}.</span><span>${it[0]}</span><span class="tag">${it[2]}</span>`;ul.append(li)})}
+function display(){let it=current();$("phase").textContent=idx>=items.length?"COMPLETADO":working?"TRABAJO":"DESCANSO";$("phase").style.color=idx>=items.length?"#31b56a":working?"#31b56a":"#3989ed";$("clock").textContent=secs(Math.max(0,left));$("exercise").textContent=it[0];$("description").textContent=it[1];$("step").textContent=idx>=items.length?items.length+"/"+items.length:(idx+1)+"/"+items.length;$("round").textContent=Math.min(roundNo,Number($("rounds").value))+" / "+$("rounds").value;$("total").textContent=secs(elapsedBefore+(running?Math.max(0,Date.now()-startedAt)/1000:0));$("bar").style.width=(phaseDuration?100*(1-left/phaseDuration):0)+"%";document.querySelectorAll(".list li").forEach((li,i)=>li.classList.toggle("active",i===idx&&idx<items.length));$("start").textContent=running?"Ⅱ Pausar":(idx===0&&left===work?"▶ Iniciar":"▶ Continuar")}
+function load(){pause();routineKey=$("routine").value;items=routines[routineKey].items;idx=0;roundNo=1;working=true;left=work;phaseDuration=work;elapsedBefore=0;renderList();display()}
+function changeInterval(){[work,rest]= $("interval").value.split("-").map(Number);load()}
+function beep(freq=650,dur=.16){if(!$("sound").checked)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.18,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
+async function lock(){try{if("wakeLock"in navigator)wake=await navigator.wakeLock.request("screen")}catch(e){}}
+function unlock(){if(wake){wake.release().catch(()=>{});wake=null}}
+function beginPhase(){phaseStarted=Date.now();phaseDuration=left}
+function start(){if(idx>=items.length){load()}if(!running){running=true;startedAt=Date.now();beginPhase();lock();beep(700,.12);handle=setInterval(tick,200);display()}}
+function pause(){if(!running)return;elapsedBefore+=Math.max(0,Date.now()-startedAt)/1000;running=false;clearInterval(handle);handle=null;unlock();display()}
+function toggle(){if(running)pause();else start()}
+function advance(){if(idx>=items.length)return;if(working){working=false;left=rest;beep(450,.18)}else{working=true;idx++;if(idx>=items.length){roundNo++;if(roundNo<=Number($("rounds").value))idx=0;else{idx=items.length;pause();left=0;beep(880,.5);display();return}}left=work;beep(720,.2)}beginPhase();display()}
+function tick(){let passed=(Date.now()-phaseStarted)/1000;left=Math.max(0,Math.ceil(phaseDuration-passed));if(left<=3&&left>0)beep(500,.07);if(left===0)advance();else display()}
+function reset(){pause();idx=0;roundNo=1;working=true;left=work;elapsedBefore=0;phaseDuration=work;display()}
+$("start").onclick=toggle;$("skip").onclick=()=>{if(idx<items.length){advance()}};$("reset").onclick=reset;$("routine").onchange=load;$("interval").onchange=changeInterval;$("rounds").onchange=load;
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&running){lock();tick()}});
+if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+load();
+</script></body></html>
